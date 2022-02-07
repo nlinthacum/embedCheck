@@ -10,10 +10,26 @@ def CollectInput():
     #print(edges)
     return numNodes
 
+
+#makes list of nodes with points set to true
 def SetupNodes():
     nodesFree = [Node(numNodes) for i in range(numNodes)]
-    for i in range(numNodes):
-        print(nodesFree[i].points)
+    return nodesFree
+
+#def UpdateNodesAvailablility():
+
+
+
+def CheckEdge(startNode, endNode, Nodes):
+    if not Nodes[startNode].points[endNode]:
+        return False
+    return True
+
+
+
+
+
+
 
 
 class Node():
@@ -22,9 +38,25 @@ class Node():
         #print(self.points)
 
 
+
+
 if __name__ == '__main__':
     numNodes = CollectInput()
-    SetupNodes()
+    Nodes = SetupNodes()
+    #nodesFree[0].points[1] = False
+
+    Nodes[1].points[3] = False
+    Nodes[1].points[4] = False
+
+    for i in range(numNodes):
+        print(Nodes[i].points)
+
+    passORfail = CheckEdge(1,3,Nodes)
+
+    print(f"Does edge pass: {passORfail}")
+
+
+
 
 
 
