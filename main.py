@@ -16,7 +16,14 @@ def SetupNodes():
     nodesFree = [Node(numNodes) for i in range(numNodes)]
     return nodesFree
 
-#def UpdateNodesAvailablility():
+def UpdateNodesAvailablility(startNode, endNode, numNodes, Nodes):
+    for i in range (startNode + 1, endNode):
+        for j in range(endNode, numNodes):
+            Nodes[i].points[j] = False
+    return Nodes
+
+
+
 
 
 
@@ -48,12 +55,16 @@ if __name__ == '__main__':
     Nodes[1].points[3] = False
     Nodes[1].points[4] = False
 
+
+    passORfail = CheckEdge(1,2,Nodes)
+
+    #I am working here.....
+    Nodes = UpdateNodesAvailablility(1, 3,5, Nodes)
+
     for i in range(numNodes):
         print(Nodes[i].points)
 
-    passORfail = CheckEdge(1,3,Nodes)
 
-    print(f"Does edge pass: {passORfail}")
 
 
 
