@@ -1,4 +1,7 @@
 
+from itertools import permutations
+
+
 class Input:
     def __init__(self, edges, numNodes):
         self.edges = edges
@@ -66,13 +69,12 @@ class Node():
 
 if __name__ == '__main__':
 
-    Mapping = dict({0:0, 1:1, 2:2, 3:3, 4:4})
-    print(Mapping)
-    #sets up input are vars
+ #sets up input are vars
     entered = CollectInput()
     numNodes = entered.numNodes
     edges = entered.edges
     Nodes = SetupNodes()
+
 
 
 #try all of the edges
@@ -82,6 +84,25 @@ if __name__ == '__main__':
             print(f"The edge {edge} failed")
             break
         Nodes = UpdateNodesAvailablility(edge[0], edge[1], numNodes, Nodes)
+
+ ##make dictionary
+    perm = list(permutations(list(range(numNodes)), numNodes))
+
+
+    #go through all combinations
+    Mapping = {}
+    for permutation in perm:
+        print(f"Permutation: {permutation}")
+        for eachNode in range(numNodes):
+            Mapping[eachNode] = permutation[eachNode]
+        print(Mapping)
+
+
+
+
+
+
+
 
 
 
