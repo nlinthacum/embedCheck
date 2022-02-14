@@ -5,6 +5,7 @@ class Input:
         self.numNodes = numNodes
 
 
+
 def PrintNodes():
     for i in range(numNodes):
         print(f"Node {i}: " + str(Nodes[i].points))
@@ -65,6 +66,8 @@ class Node():
 
 if __name__ == '__main__':
 
+    Mapping = dict({0:0, 1:1, 2:2, 3:3, 4:4})
+    print(Mapping)
     #sets up input are vars
     entered = CollectInput()
     numNodes = entered.numNodes
