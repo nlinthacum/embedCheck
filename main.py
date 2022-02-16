@@ -1,5 +1,6 @@
 
 from itertools import permutations
+import copy
 
 
 class Input:
@@ -32,6 +33,11 @@ def SetupNodes():
     return nodesFree
 
 def UpdateNodesAvailablility(startNode, endNode, numNodes, Nodes):
+    #make smaller Node the starting Node
+    if startNode > endNode:
+        tmp = startNode
+        startNode = endNode
+        endNode = tmp
 
     #turn nodes in between to false
     for i in range(startNode + 1, endNode):
@@ -47,14 +53,22 @@ def UpdateNodesAvailablility(startNode, endNode, numNodes, Nodes):
 
 
 def CheckEdge(startNode, endNode, Nodes):
+    # make smaller Node the starting Node
+    if startNode > endNode:
+        tmp = startNode
+        startNode = endNode
+        endNode = tmp
+
     if not Nodes[startNode].points[endNode]:
         return False
     return True
 
 
-
-
-
+def MakeCombination(permutation, numNodes):
+    Mapping = {}
+    for eachNode in range(numNodes):
+        Mapping[eachNode] = permutation[eachNode]
+    return Mapping
 
 
 
@@ -76,26 +90,37 @@ if __name__ == '__main__':
     Nodes = SetupNodes()
 
 
-
-#try all of the edges
-    for edge in edges:
-        passORfail = CheckEdge(edge[0], edge[1], Nodes)
-        if not passORfail:
-            print(f"The edge {edge} failed")
-            break
-        Nodes = UpdateNodesAvailablility(edge[0], edge[1], numNodes, Nodes)
-
- ##make dictionary
     perm = list(permutations(list(range(numNodes)), numNodes))
-
-
-    #go through all combinations
-    Mapping = {}
+    # go through all combos
     for permutation in perm:
-        print(f"Permutation: {permutation}")
-        for eachNode in range(numNodes):
-            Mapping[eachNode] = permutation[eachNode]
-        print(Mapping)
+        combo = MakeCombination(permutation, numNodes)
+
+        edgesManip = copy.deepcopy(edges)
+
+        #transform the edges
+        for i in range(len(edgesManip)):
+            Nodes = SetupNodes()  # reset the edges
+            edgesManip[i][0] = combo[edges[i][0]]
+            edgesManip[i][1] = combo[edges[i][1]]
+
+        # try all of the edges
+        edge_idx = 0
+        for edge in edgesManip:
+            passORfail = CheckEdge(edgesManip[edge_idx][0], edgesManip[edge_idx][1], Nodes)
+            if not passORfail:
+                print(f"The edge {edges[edge_idx]} failed on the transformed edge ordering: {combo}")
+                break
+            Nodes = UpdateNodesAvailablility(edgesManip[edge_idx][0], edgesManip[edge_idx][1], numNodes, Nodes)
+            edge_idx += 1
+
+        if passORfail:  # this will be true when completed are edges for an ordering
+            print(f"The ordering {combo} worked")
+
+
+
+
+
+
 
 
 
