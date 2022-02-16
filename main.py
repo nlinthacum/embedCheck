@@ -71,6 +71,9 @@ def MakeCombination(permutation, numNodes):
     return Mapping
 
 
+def ListModes():
+    print("Mode 1: print the orderings that work")
+    print("Mode 2: determine the book thickness")
 
 
 class Node():
@@ -78,19 +81,59 @@ class Node():
         self.points = [True] * numNodes
 
 
+#lists the orderings that work and fail
+def listOrderings(Nodes, edgesManip, edges, numNodes):
+    # try all of the edges
+    edge_idx = 0
+    for edge in edgesManip:
+        passORfail = CheckEdge(edgesManip[edge_idx][0], edgesManip[edge_idx][1], Nodes)
+        if not passORfail:
+            print(f"The edge {edges[edge_idx]} failed on the transformed edge ordering: {combo}")
+            break
+        Nodes = UpdateNodesAvailablility(edgesManip[edge_idx][0], edgesManip[edge_idx][1], numNodes, Nodes)
+        edge_idx += 1
 
+    if passORfail:  # this will be true when completed are edges for an ordering
+        print(f"The ordering {combo} worked")
 
+def BookThickness(Nodes, edgesManip, edges, numNodes):
+    bookThickness = 1
+
+    edge_idx = 0
+    edgesInPage = []
+    for edge in edgesManip:
+        passORfail = CheckEdge(edgesManip[edge_idx][0], edgesManip[edge_idx][1], Nodes)
+        if passORfail:
+            Nodes = UpdateNodesAvailablility(edgesManip[edge_idx][0], edgesManip[edge_idx][1], numNodes, Nodes)
+            edgesInPage.append(edges[edge_idx])
+        else:
+            print(f"Book page {bookThickness} with: {edgesInPage} with the combination {combo}")
+            bookThickness += 1
+            Nodes = SetupNodes()  # reset the edges
+            Nodes = UpdateNodesAvailablility(edgesManip[edge_idx][0], edgesManip[edge_idx][1], numNodes, Nodes) #add current node to next page
+            edgesInPage = [edges[edge_idx]]
+
+        edge_idx += 1
+    print(f"Book page {bookThickness} with: {edgesInPage} with the combination {combo}")
+    print(f"The book thickness for ordering {combo} is {bookThickness}")
+    print("\n")
+
+    return bookThickness
 
 if __name__ == '__main__':
 
  #sets up input are vars
+    ListModes(
+    )
+    mode = int(input("Enter Mode: "))
     entered = CollectInput()
     numNodes = entered.numNodes
     edges = entered.edges
     Nodes = SetupNodes()
-
-
     perm = list(permutations(list(range(numNodes)), numNodes))
+    min_thickness_ordering = []
+
+
     # go through all combos
     for permutation in perm:
         combo = MakeCombination(permutation, numNodes)
@@ -103,32 +146,19 @@ if __name__ == '__main__':
             edgesManip[i][0] = combo[edges[i][0]]
             edgesManip[i][1] = combo[edges[i][1]]
 
-        # try all of the edges
-        edge_idx = 0
-        for edge in edgesManip:
-            passORfail = CheckEdge(edgesManip[edge_idx][0], edgesManip[edge_idx][1], Nodes)
-            if not passORfail:
-                print(f"The edge {edges[edge_idx]} failed on the transformed edge ordering: {combo}")
-                break
-            Nodes = UpdateNodesAvailablility(edgesManip[edge_idx][0], edgesManip[edge_idx][1], numNodes, Nodes)
-            edge_idx += 1
 
-        if passORfail:  # this will be true when completed are edges for an ordering
-            print(f"The ordering {combo} worked")
+        #case 1: list the combos that work and the ones that fail
+        if mode == 1:
+            listOrderings(Nodes, edgesManip, edges, numNodes)
+        if mode == 2:
+            min_book_thickness = 999999999
+            curThickness = BookThickness(Nodes, edgesManip, edges, numNodes)
+            if  curThickness < min_book_thickness:
+                min_book_thickness = curThickness
+                min_thickness_ordering.append(permutation)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+    if mode == 2:
+        print(f"Book Thickness: {min_book_thickness} with ordering {min_thickness_ordering}")
 
 
 
