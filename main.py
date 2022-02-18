@@ -131,6 +131,7 @@ if __name__ == '__main__':
     edges = entered.edges
     Nodes = SetupNodes()
     perm = list(permutations(list(range(numNodes)), numNodes))
+    min_book_thickness = 999999999
     min_thickness_ordering = []
 
 
@@ -150,15 +151,21 @@ if __name__ == '__main__':
         #case 1: list the combos that work and the ones that fail
         if mode == 1:
             listOrderings(Nodes, edgesManip, edges, numNodes)
-        if mode == 2:
-            min_book_thickness = 999999999
+        #case 2: determine the book thickness
+        elif mode == 2:
             curThickness = BookThickness(Nodes, edgesManip, edges, numNodes)
-            if  curThickness < min_book_thickness:
-                min_book_thickness = curThickness
+            if curThickness == min_book_thickness:
                 min_thickness_ordering.append(permutation)
+            elif curThickness < min_book_thickness:
+                min_thickness_ordering.clear()
+                min_thickness_ordering.append(permutation)
+                min_book_thickness = curThickness
+
+
 
     if mode == 2:
         print(f"Book Thickness: {min_book_thickness} with ordering {min_thickness_ordering}")
+
 
 
 
