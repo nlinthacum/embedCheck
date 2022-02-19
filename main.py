@@ -97,26 +97,40 @@ def listOrderings(Nodes, edgesManip, edges, numNodes):
         print(f"The ordering {combo} worked")
 
 def BookThickness(Nodes, edgesManip, edges, numNodes):
-    bookThickness = 1
+    edgePerms = list(permutations(edgesManip, len(edgesManip))) #permutations of edgesManip
 
-    edge_idx = 0
-    edgesInPage = []
-    for edge in edgesManip:
-        passORfail = CheckEdge(edgesManip[edge_idx][0], edgesManip[edge_idx][1], Nodes)
-        if passORfail:
-            Nodes = UpdateNodesAvailablility(edgesManip[edge_idx][0], edgesManip[edge_idx][1], numNodes, Nodes)
-            edgesInPage.append(edges[edge_idx])
-        else:
-            print(f"Book page {bookThickness} with: {edgesInPage} with the combination {combo}")
-            bookThickness += 1
-            Nodes = SetupNodes()  # reset the edges
-            Nodes = UpdateNodesAvailablility(edgesManip[edge_idx][0], edgesManip[edge_idx][1], numNodes, Nodes) #add current node to next page
-            edgesInPage = [edges[edge_idx]]
 
-        edge_idx += 1
-    print(f"Book page {bookThickness} with: {edgesInPage} with the combination {combo}")
-    print(f"The book thickness for ordering {combo} is {bookThickness}")
-    print("\n")
+    for edgePerm in edgePerms:
+        bookThickness = 1
+        local_book_thickness = 9999999
+        edge_idx = 0
+        edgesInPage = []
+        for edge in edgePerm:
+            passORfail = CheckEdge(edgePerm[edge_idx][0], edgePerm[edge_idx][1], Nodes)
+            if passORfail:
+                Nodes = UpdateNodesAvailablility(edgePerm[edge_idx][0], edgePerm[edge_idx][1], numNodes, Nodes)
+                edgesInPage.append(edgePerm[edge_idx])
+            else:
+                print(f"Book page {bookThickness} with: {edgesInPage} with the combination {combo}")
+                bookThickness += 1
+                Nodes = SetupNodes()  # reset the edges
+                Nodes = UpdateNodesAvailablility(edgePerm[edge_idx][0], edgePerm[edge_idx][1], numNodes, Nodes) #add current node to next page
+                edgesInPage = [edges[edge_idx]]
+
+            edge_idx += 1
+        print(f"Book page {bookThickness} with: {edgesInPage} with the combination {combo}")
+        print(f"The book thickness for ordering {combo} is {bookThickness}")
+        print("\n")
+
+        if local_book_thickness < bookThickness:
+            bookThickness = local_book_thickness
+
+
+
+        Nodes = SetupNodes()  # reset the edges
+
+
+
 
     return bookThickness
 
